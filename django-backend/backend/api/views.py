@@ -1,13 +1,11 @@
-from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from .serializers import ContactSerializer
 
-# Create your views here.
-
-@api_view(['GET'])
-def hello(request):
-    return Response({"message": "Hello from Django backend!"})
-
-@api_view(['GET'])
-def root_view(request):
-    return Response({"message": "Welcome to the Django backend root!"})
+@api_view(['POST'])
+def submit_form(request):
+    serializer = ContactSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "Form submitted successfully"})
+    return Response({"message": "Invalid data", "errors": serializer.errors}, status=400)
